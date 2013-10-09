@@ -1,0 +1,15 @@
+/* does this duplicate aloha-block-ImageWithCreditBlock? */
+.image-with-credit-block {
+    display: inline-block;
+    text-align: center;
+}
+
+.image-with-credit-image {
+    /*display: inline;*/
+}
+
+.image-with-credit-caption {
+    display: block;
+    text-align: left;
+    width: auto;
+}

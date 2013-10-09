@@ -1,0 +1,29 @@
+{
+	"name": "paste-with-credit",
+	"description": "Plugin to paste images with attribution",
+	"version": "0.1",
+	"keywords": [
+		"aloha",
+		"plugin"
+	],
+	"maintainers": [
+		{
+			"name": "Artem Popov",
+			"email": "artfwo@commonsmachinery.se",
+			"web": "http://commonsmachinery.se"
+		}
+	],
+	"licenses": [
+		{
+			"type": "GPLv2",
+			"url": "http://www.gnu.org/licenses/gpl-2.0.html",
+		}
+	],
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/commonsmachinery/aloha-paste-with-credit.git",
+			"path": "custom/paste-with-credit"
+		}
+	]
+}

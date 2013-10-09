@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Aloha Editor</title>
+  <script>
+  Aloha = {};
+  Aloha.settings = {
+    sidebar: { disabled: false }
+  };
+  </script>
+  
+  <script src="javascripts/aloha/lib/require.js"></script>
+  <script src="javascripts/aloha/lib/aloha.js"
+    data-aloha-plugins="common/ui,
+    common/format,
+    common/image,
+    common/block,
+    custom/paste-with-credit">
+  </script>
+  <link rel="stylesheet" href="javascripts/aloha/css/aloha.css" type="text/css">
+  <link rel="stylesheet" href="index.css" type="text/css">
+  <style type="text/css">
+    body {
+      background-color: gray;
+      font-family: sans-serif;
+      font-size: smaller;
+    }
+
+    #main {
+      padding: 40px;
+      
+      background-color: white;
+      border-radius: 10px;
+      border: 1px solid black;
+      width: 700px ;
+      
+      margin-top: 50px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #content {
+      overflow: auto;
+      height: 500px;
+    }
+
+    .image-with-credit-block {
+      background-color: white;
+      margin: 10px;
+      padding: 10px;
+    }
+
+    .image-with-credit-caption {
+      background-color: white;
+      margin: 10px;
+      padding: 5px;
+      border-top: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+  <div id="main">
+    <div class="textbox x-enable-paste-image" id="content">
+      <h1>edit me</h1>
+      <p>A paragraph.</p>
+      <p>Sed vel convallis nisl. In ut gravida justo, in faucibus ligula. Nulla tincidunt congue sem. Cras massa justo, viverra sed turpis non, tincidunt commodo urna. Nulla nec purus sit amet orci vulputate bibendum vitae vel lectus. Aliquam erat volutpat. Morbi quis eleifend turpis. Duis sodales id neque elementum aliquam. Nulla et convallis est. Pellentesque vitae velit ut tortor pulvinar egestas.</p>
+    </div>
+  </div>
+  
+  <script type="text/javascript">
+    Aloha.ready( function() {
+      Aloha.jQuery('#content').aloha();
+    });
+  </script>
+</body>
+</html>
