@@ -125,9 +125,7 @@ define([
 
 		// build attribution
 		if (title) {
-			//creditDiv.append(createSpan('"'));
 			creditDiv.append(createSpan(title, 'http://purl.org/dc/elements/1.1/title'));
-			//creditDiv.append(createSpan('" '));
 		} else {
 			creditDiv.append('Image');
 		}
@@ -169,9 +167,23 @@ define([
 
 			for (var i in sources) {
 				var sourceUri = sources[i].uri;
-				//creditDiv.append(createA(sourceUri, sourceUri, 'http://purl.org/dc/elements/1.1/source', null));
+				var sourceTitle = kb.any(sources[i], DC('title'));
+				var sourceAuthor = kb.any(sources[i], CC('attributionName'));
+				if (sourceAuthor == null)
+					sourceAuthor = kb.any(sources[i], DC('creator'));
 				var li = jQuery("<li/>");
-				li.append(createA(sourceUri, sourceUri, 'http://purl.org/dc/elements/1.1/source', null));
+				li.attr("about", sourceUri);
+
+				if (sourceTitle == null)
+					sourceTitle = sourceUri;
+
+				li.append(createA(sourceUri, sourceTitle, 'http://purl.org/dc/elements/1.1/source', null));
+
+				if (sourceAuthor) {
+					li.append(" by ");
+					li.append(createSpan(sourceAuthor, 'http://creativecommons.org/ns#attributionName'));
+				}
+
 				sourceList.append(li);
 		    }
 
