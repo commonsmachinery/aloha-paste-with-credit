@@ -48,6 +48,7 @@ define([
 	var CC = $rdf.Namespace('http://creativecommons.org/ns#');
 	var XHTML = $rdf.Namespace('http://www.w3.org/1999/xhtml/vocab#');
 	var RDF = $rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#"');
+	var OG = $rdf.Namespace('http://ogp.me/ns#');
 
 	// Parse the RDF/XML using https://github.com/linkeddata/rdflib.js
 	function parseRDFXML(str) {
@@ -100,7 +101,20 @@ define([
 
 		// Could go look for different titles in an rdf:Alt node and
 		// choose one based on language, and also look for dcterms:title.
-		var title = kb.any(root, DC('title'));
+		var title = kb.any(root, DC('title')) ||
+			kb.any(root, OG('title'));
+
+		// Use canonical URL for link, if any
+		var url = kb.any(root, OG('url'));
+
+		if (url) {
+			url = url.uri || url.value;
+		}
+		else {
+			// Fall back on subject URI, which is better than nothing
+			url = srcURI;
+		}
+
 		var creator = kb.any(root, DC('creator'));
 
 		var attributionURL = kb.any(root, CC('attributionURL'));
@@ -125,7 +139,13 @@ define([
 
 		// build attribution
 		if (title) {
-			creditDiv.append(createSpan(title, 'http://purl.org/dc/elements/1.1/title'));
+			if (url) {
+				creditDiv.append(createA(url, title,
+					'http://purl.org/dc/elements/1.1/source',
+					'http://purl.org/dc/elements/1.1/title'));
+			} else {
+				creditDiv.append(createSpan(title, 'http://purl.org/dc/elements/1.1/title'));
+			}
 		} else {
 			creditDiv.append('Image');
 		}
@@ -160,7 +180,7 @@ define([
 		// sources
 		var sources = kb.each(root, DC('source'));
 		if (sources.length > 0) {
-			creditDiv.append(' Based on:');
+			creditDiv.append(' Source works:');
 
 			var sourceList = jQuery("<ul/>");
 			creditDiv.append(sourceList);
@@ -185,7 +205,7 @@ define([
 				}
 
 				sourceList.append(li);
-		    }
+			}
 
 			//creditDiv.append('.');
 		}
@@ -239,15 +259,21 @@ define([
 
 					if (detail.rdfxml) {
 						var kb = parseRDFXML(detail.rdfxml);
-						var credit = createAttribution(kb, '', '#' + imgDiv.attr('id'));
-						var captionDiv = jQuery('<div/>');
 
-						// do we need to leave captions editable?
-						captionDiv.addClass('aloha-editable');
-						captionDiv.addClass('image-with-credit-caption');
+						// Find the source image
+						var source = kb.any(kb.sym(''), DC('source'));
 
-						captionDiv.append(credit);
-						blockDiv.append(captionDiv);
+						if (source) {
+							var credit = createAttribution(kb, source.uri, '#' + imgDiv.attr('id'));
+							var captionDiv = jQuery('<div/>');
+
+							// do we need to leave captions editable?
+							captionDiv.addClass('aloha-editable');
+							captionDiv.addClass('image-with-credit-caption');
+
+							captionDiv.append(credit);
+							blockDiv.append(captionDiv);
+						}
 					}
 
 					GENTICS.Utils.Dom.insertIntoDOM(blockDiv, range, jQuery(Aloha.activeEditable.obj), true);
