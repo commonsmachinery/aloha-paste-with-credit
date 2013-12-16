@@ -8,129 +8,129 @@
 // Distributed under GNU GPL v2, please see LICENSE in the top dir.
 
 define([
-	'jquery',
-	'aloha',
-	'aloha/plugin',
-	'aloha/command',
-	'block/block',
-	'block/blockmanager',
-	'aloha/copypaste',
-	'libcredit',
-	'css!paste-with-credit/css/paste-with-credit.css'
+    'jquery',
+    'aloha',
+    'aloha/plugin',
+    'aloha/command',
+    'block/block',
+    'block/blockmanager',
+    'aloha/copypaste',
+    'libcredit',
+    'css!paste-with-credit/css/paste-with-credit.css'
 ], function (
-	jQuery,
-	Aloha,
-	Plugin,
-	Commands,
-	Block,
-	BlockManager,
-	CopyPaste,
+    jQuery,
+    Aloha,
+    Plugin,
+    Commands,
+    Block,
+    BlockManager,
+    CopyPaste,
         libcredit
 ) {
-	'use strict';
+    'use strict';
 
-	var idNum = 0; // counter for having unique IDs for #abouts
-
-
-	function createSpan(content, property) {
-		var span = jQuery('<span/>');
-		if (content.value)
-			span.append(content.value);
-		else
-			span.append(content);
-
-		if (property)
-			span.attr('property', property);
-
-		return span;
-	}
-
-	function createA(href, content, rel, property) {
-		var a = jQuery('<a/>');
-		a.attr('href', href);
-		if (content.value)
-			a.append(content.value);
-		else
-			a.append(content);
-
-		if (rel)
-			a.attr('rel', rel);
-		if (property)
-			a.attr('property', property);
-
-		return a;
-	}
-
-	var ImageWithCreditBlock = Block.AbstractBlock.extend({
-		title: 'Image with credit'
-	});
+    var idNum = 0; // counter for having unique IDs for #abouts
 
 
-	var PasteRdfPlugin = Plugin.create('paste-with-credit', {
+    function createSpan(content, property) {
+        var span = jQuery('<span/>');
+        if (content.value)
+            span.append(content.value);
+        else
+            span.append(content);
 
-		init: function() {
-			var self = this;
+        if (property)
+            span.attr('property', property);
 
-			BlockManager.registerBlockType('ImageWithCreditBlock', ImageWithCreditBlock);
+        return span;
+    }
 
-			Aloha.bind('aloha-editable-created', function(e, editable) {
-				editable.obj.addClass('x-enable-paste-image');
-				editable.obj.on('x-onpaste-image', self._pasteHandler);
-			});
-		},
+    function createA(href, content, rel, property) {
+        var a = jQuery('<a/>');
+        a.attr('href', href);
+        if (content.value)
+            a.append(content.value);
+        else
+            a.append(content);
 
-		_pasteHandler: function(event) {
-			var self = this;
-			var detail = event.originalEvent.detail;
+        if (rel)
+            a.attr('rel', rel);
+        if (property)
+            a.attr('property', property);
 
-			var range = CopyPaste.getRange();
-			
-			if (Aloha.queryCommandSupported('insertHTML')) {
-				var range = Aloha.Selection.getRangeObject();
+        return a;
+    }
 
-				if (range.isCollapsed()) {
-					var blockDiv = jQuery('<div/>');
-					blockDiv.addClass('image-with-credit-block');
-					blockDiv.alohaBlock({
-						'aloha-block-type': 'ImageWithCreditBlock'
-					});
+    var ImageWithCreditBlock = Block.AbstractBlock.extend({
+        title: 'Image with credit'
+    });
 
-					var imgDiv = jQuery('<img/>', {
-						id: "work" + idNum.toString(),
-						src: detail.image
-					});
-					idNum++;
 
-					imgDiv.addClass('image-with-credit-image');
-					blockDiv.append(imgDiv);
+    var PasteRdfPlugin = Plugin.create('paste-with-credit', {
 
-					if (detail.rdfxml) {
-                                            var doc, credit, formatter, captionDiv;
+        init: function() {
+            var self = this;
 
-                                            doc = new DOMParser().parseFromString(detail.rdfxml, 'text/xml');
-                                            credit = libcredit.credit(libcredit.parseRDFXML(doc));
+            BlockManager.registerBlockType('ImageWithCreditBlock', ImageWithCreditBlock);
 
-                                            formatter = libcredit.htmlCreditFormatter(document);
-                                            credit.format(formatter, 2);
+            Aloha.bind('aloha-editable-created', function(e, editable) {
+                editable.obj.addClass('x-enable-paste-image');
+                editable.obj.on('x-onpaste-image', self._pasteHandler);
+            });
+        },
 
-					    captionDiv = jQuery('<div/>');
-                                            
-					    // do we need to leave captions editable?
-					    captionDiv.addClass('aloha-editable');
-					    captionDiv.addClass('image-with-credit-caption');
-                                            
-                                            captionDiv.append(formatter.getRoot());
+        _pasteHandler: function(event) {
+            var self = this;
+            var detail = event.originalEvent.detail;
 
-					    blockDiv.append(captionDiv);
-					}
+            var range = CopyPaste.getRange();
 
-					GENTICS.Utils.Dom.insertIntoDOM(blockDiv, range, jQuery(Aloha.activeEditable.obj), true);
-				} else {
-					// TODO: replace the selection?
-				}
-			}
-		}
-	});
+            if (Aloha.queryCommandSupported('insertHTML')) {
+                var range = Aloha.Selection.getRangeObject();
 
-	return PasteRdfPlugin;
+                if (range.isCollapsed()) {
+                    var blockDiv = jQuery('<div/>');
+                    blockDiv.addClass('image-with-credit-block');
+                    blockDiv.alohaBlock({
+                        'aloha-block-type': 'ImageWithCreditBlock'
+                    });
+
+                    var imgDiv = jQuery('<img/>', {
+                        id: "work" + idNum.toString(),
+                        src: detail.image
+                    });
+                    idNum++;
+
+                    imgDiv.addClass('image-with-credit-image');
+                    blockDiv.append(imgDiv);
+
+                    if (detail.rdfxml) {
+                        var doc, credit, formatter, captionDiv;
+                        console.log(detail.rdfxml);
+                        doc = new DOMParser().parseFromString(detail.rdfxml, 'text/xml');
+                        credit = libcredit.credit(libcredit.parseRDFXML(doc));
+
+                        formatter = libcredit.htmlCreditFormatter(document);
+                        credit.format(formatter, 2, null, imgDiv.attr('id'));
+
+                        captionDiv = jQuery('<div/>');
+
+                        // do we need to leave captions editable?
+                        captionDiv.addClass('aloha-editable');
+                        captionDiv.addClass('image-with-credit-caption');
+
+                        captionDiv.append(formatter.getRoot());
+
+                        blockDiv.append(captionDiv);
+                    }
+
+                    GENTICS.Utils.Dom.insertIntoDOM(blockDiv, range, jQuery(Aloha.activeEditable.obj), true);
+                } else {
+                    // TODO: replace the selection?
+                }
+            }
+        }
+    });
+
+    return PasteRdfPlugin;
 });
