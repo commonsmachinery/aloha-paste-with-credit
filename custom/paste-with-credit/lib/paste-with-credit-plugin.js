@@ -32,35 +32,6 @@ define([
     var idNum = 0; // counter for having unique IDs for #abouts
 
 
-    function createSpan(content, property) {
-        var span = jQuery('<span/>');
-        if (content.value)
-            span.append(content.value);
-        else
-            span.append(content);
-
-        if (property)
-            span.attr('property', property);
-
-        return span;
-    }
-
-    function createA(href, content, rel, property) {
-        var a = jQuery('<a/>');
-        a.attr('href', href);
-        if (content.value)
-            a.append(content.value);
-        else
-            a.append(content);
-
-        if (rel)
-            a.attr('rel', rel);
-        if (property)
-            a.attr('property', property);
-
-        return a;
-    }
-
     var ImageWithCreditBlock = Block.AbstractBlock.extend({
         title: 'Image with credit'
     });
@@ -111,7 +82,7 @@ define([
                         credit = libcredit.credit(libcredit.parseRDFXML(doc));
 
                         formatter = libcredit.htmlCreditFormatter(document);
-                        credit.format(formatter, 2, null, imgDiv.attr('id'));
+                        credit.format(formatter, 2, null, '#' + imgDiv.attr('id'));
 
                         captionDiv = jQuery('<div/>');
 
