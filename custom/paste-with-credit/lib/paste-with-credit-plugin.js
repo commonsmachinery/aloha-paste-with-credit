@@ -78,21 +78,27 @@ define([
                     if (detail.rdfxml) {
                         var doc, credit, formatter, captionDiv;
                         console.log(detail.rdfxml);
+
                         doc = new DOMParser().parseFromString(detail.rdfxml, 'text/xml');
                         credit = libcredit.credit(libcredit.parseRDFXML(doc));
 
-                        formatter = libcredit.htmlCreditFormatter(document);
-                        credit.format(formatter, 2, null, '#' + imgDiv.attr('id'));
+                        if (credit) {
+                            formatter = libcredit.htmlCreditFormatter(document);
+                            credit.format(formatter, 2, null, '#' + imgDiv.attr('id'));
 
-                        captionDiv = jQuery('<div/>');
+                            captionDiv = jQuery('<div/>');
 
-                        // do we need to leave captions editable?
-                        captionDiv.addClass('aloha-editable');
-                        captionDiv.addClass('image-with-credit-caption');
+                            // do we need to leave captions editable?
+                            captionDiv.addClass('aloha-editable');
+                            captionDiv.addClass('image-with-credit-caption');
 
-                        captionDiv.append(formatter.getRoot());
+                            captionDiv.append(formatter.getRoot());
 
-                        blockDiv.append(captionDiv);
+                            blockDiv.append(captionDiv);
+                        }
+                        else {
+                            console.log('could not get credit from RDF');
+                        }
                     }
 
                     GENTICS.Utils.Dom.insertIntoDOM(blockDiv, range, jQuery(Aloha.activeEditable.obj), true);
